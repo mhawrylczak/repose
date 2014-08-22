@@ -5,7 +5,7 @@ import java.io.{File, InputStream, PrintStream}
 import akka.actor.{Props, ActorSystem}
 import com.typesafe.config.Config
 import org.apache.log4j.{BasicConfigurator, PropertyConfigurator}
-import org.openrepose.servo.actors.{SystemModelWatcher, NodeStore, ReposeLauncher}
+import org.openrepose.servo.actors.{ConfigurationWatcher, NodeStore, ReposeLauncher}
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConversions
@@ -194,7 +194,7 @@ class Servo {
       val nodeStoreActorRef = system.actorOf(NodeStore.props(launcherProps))
 
       //Start up a System Model Watcher on that directory
-      val systemModelWatcherActorRef = system.actorOf(SystemModelWatcher.props(servoConfig.configDirectory.getAbsolutePath, nodeStoreActorRef))
+      val systemModelWatcherActorRef = system.actorOf(ConfigurationWatcher.props(servoConfig.configDirectory.getAbsolutePath, nodeStoreActorRef))
 
       //Get the system-model.cfg.xml and read it in first. Send a message to the NodeStore
       val systemModelContent = Source.fromFile(new File(servoConfig.configDirectory, "system-model.cfg.xml")).getLines().mkString
